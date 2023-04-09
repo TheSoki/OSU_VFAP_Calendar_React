@@ -37,3 +37,8 @@ export const eventSchema = z.object({
 export const permissionSchema = z.object({
     permission: z.enum(['ADMIN', 'USER']),
 })
+
+export const tokensSchema = z.object({
+    accessToken: z.string(),
+    refreshToken: z.string(),
+})
