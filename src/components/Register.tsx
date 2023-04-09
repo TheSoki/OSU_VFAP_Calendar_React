@@ -34,7 +34,7 @@ export const Register = () => {
     }, [])
 
     return (
-        <>
+        <div className="w-full md:w-1/2 lg:w-1/3 mx-auto">
             <form className="px-8 pt-6 pb-8 mb-4" onSubmit={handleSubmit(onSubmit)}>
                 <div className="mb-4">
                     <label
@@ -137,6 +137,6 @@ export const Register = () => {
                     Login!
                 </Link>
             </div>
-        </>
+        </div>
     )
 }

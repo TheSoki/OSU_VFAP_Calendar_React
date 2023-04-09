@@ -1,5 +1,4 @@
 import { FC, ReactNode } from 'react'
-import { Layout } from './Layout'
 import { Navigate } from 'react-router-dom'
 
 export const ProtectedRoute: FC<{
@@ -12,5 +11,5 @@ export const ProtectedRoute: FC<{
         return <Navigate replace to="/login" />
     }
 
-    return <Layout>{children}</Layout>
+    return <>{children}</>
 }

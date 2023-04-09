@@ -7,7 +7,6 @@ import {
     eventSchema,
     updateUserSchema,
     permissionSchema,
-    tokensSchema,
 } from './schema'
 import { Tokens, User, Note, Permission } from './types'
 
@@ -72,64 +71,25 @@ const router = u.router({
 
 export const client = createTypeLevelClient<typeof router>((path, method, input) => {
     const accessToken = localStorage.getItem('accessToken')
-    const refreshToken = localStorage.getItem('refreshToken')
-
-    const token = path === '/auth/refresh' ? refreshToken : accessToken
 
     return fetch('http://localhost' + path, {
         method,
         headers: {
             'Content-Type': 'application/json',
-            Authorization: `Bearer ${token}`,
+            Authorization: `Bearer ${accessToken}`,
         },
         body: JSON.stringify(input),
-    }).then(async (res) => {
-        // if the refresh token is expired, try to refresh it
-        if (res.status === 401) {
-            if (accessToken && refreshToken) {
-                await fetch('http://localhost/auth/refresh', {
-                    method: 'GET',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                })
-                    .then(async (res) => {
-                        const tokens = await tokensSchema.parseAsync(res.json())
-
-                        localStorage.setItem('accessToken', tokens.accessToken)
-                        localStorage.setItem('refreshToken', tokens.refreshToken)
-
-                        // try the original request again
-                        return fetch('http://localhost' + path, {
-                            method,
-                            headers: {
-                                'Content-Type': 'application/json',
-                                Authorization: `Bearer ${tokens.accessToken}`,
-                            },
-                            body: JSON.stringify(input),
-                        }).then((res) => {
-                            if (res.ok) {
-                                return res.json()
-                            } else {
-                                throw new Error(res.statusText)
-                            }
-                        })
-                    })
-                    .catch((err) => {
-                        localStorage.removeItem('accessToken')
-                        localStorage.removeItem('refreshToken')
-
-                        window.location.href = '/login'
-
-                        throw new Error(err.statusText)
-                    })
-            } else {
-                window.location.href = '/login'
-            }
-        } else if (res.ok) {
+    }).then((res) => {
+        if (res.ok) {
             return res.json()
+        }
+
+        if (res.status === 401) {
+            localStorage.removeItem('accessToken')
+            localStorage.removeItem('refreshToken')
+            window.location.href = '/login'
         } else {
-            throw new Error(res.statusText)
+            throw new Error(`HTTP error! status: ${res.status}`)
         }
     })
 })

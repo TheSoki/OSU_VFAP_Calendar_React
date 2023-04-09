@@ -14,7 +14,11 @@ export const LayoutMenu = () => {
     const isLoggedIn = accessToken && refreshToken
 
     const logout = useCallback(() => {
-        client('/auth/logout', 'GET')
+        try {
+            client('/auth/logout', 'GET')
+        } catch {
+            /* empty */
+        }
         localStorage.removeItem('accessToken')
         localStorage.removeItem('refreshToken')
         navigate('/')
@@ -86,9 +90,9 @@ export const LayoutMenu = () => {
                         xmlns="http://www.w3.org/2000/svg"
                     >
                         <path
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            stroke-width="2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth="2"
                             d="M19 9l-7 7-7-7"
                         ></path>
                     </svg>
@@ -102,9 +106,9 @@ export const LayoutMenu = () => {
                         xmlns="http://www.w3.org/2000/svg"
                     >
                         <path
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            stroke-width="2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth="2"
                             d="M5 15l7-7 7 7"
                         ></path>
                     </svg>
