@@ -22,26 +22,16 @@ const getNotificationColor = (type: NotificationTypeValuesType) => {
     }
 }
 
-export const pushNotification = (props: {
-    message: string
-    type: NotificationTypeValuesType
-    onRevert?: () => void
-}) => {
+export const pushNotification = (props: { message: string; type: NotificationTypeValuesType }) => {
     const toastId = toast(
         <div className="flex justify-between items-start">
             <span className="flex flex-col">
-                <p className="font-bold text-base lowercase first-letter:uppercase">
-                    {props.type}
-                </p>
+                <p className="font-bold text-base lowercase first-letter:uppercase">{props.type}</p>
                 <p className="mt-1">{props.message}</p>
             </span>
 
             <span className="ml-2">
-                <button
-                    type="button"
-                    className="mt-1"
-                    onClick={() => toast.dismiss(toastId)}
-                >
+                <button type="button" className="mt-1" onClick={() => toast.dismiss(toastId)}>
                     <img
                         src="./cross.svg"
                         style={{

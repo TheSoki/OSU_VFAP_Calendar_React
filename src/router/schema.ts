@@ -30,10 +30,15 @@ export const noteSchema = z.object({
 export const eventSchema = z.object({
     title: z.string().min(4),
     content: z.string().min(4),
-    start: z.date(),
-    end: z.date(),
+    // format YYYY-MM-DDTHH:mm:ss.sssZ (2023-04-10T17:26:33.086Z) (ISO 8601)
+    start: z.string().regex(/^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2}).(\d{3})Z$/),
+    end: z.string().regex(/^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2}).(\d{3})Z$/),
 })
 
 export const permissionSchema = z.object({
     permission: z.enum(['ADMIN', 'USER']),
+})
+
+export const methodWithId = z.object({
+    id: z.string().uuid(),
 })

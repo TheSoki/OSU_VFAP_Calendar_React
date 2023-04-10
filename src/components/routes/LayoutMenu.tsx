@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { client } from '../../router'
 import classNames from 'classnames'
+import { useMutation, useQuery } from '@tanstack/react-query'
 
 export const LayoutMenu = () => {
     const [isOpen, setIsOpen] = useState(false)
@@ -9,20 +10,18 @@ export const LayoutMenu = () => {
     const navigate = useNavigate()
 
     const accessToken = localStorage.getItem('accessToken')
-    const refreshToken = localStorage.getItem('refreshToken')
 
-    const isLoggedIn = accessToken && refreshToken
+    const { data } = useQuery(['/auth/me'], () => client('/auth/me', 'GET'), {
+        enabled: !!accessToken,
+    })
 
-    const logout = useCallback(() => {
-        try {
-            client('/auth/logout', 'GET')
-        } catch {
-            /* empty */
-        }
-        localStorage.removeItem('accessToken')
-        localStorage.removeItem('refreshToken')
-        navigate('/')
-    }, [])
+    const { mutate } = useMutation({
+        mutationFn: () => client('/auth/logout', 'GET'),
+        onSuccess() {
+            localStorage.removeItem('accessToken')
+            navigate('/')
+        },
+    })
 
     const handleOutsideClick = useCallback(
         (e: MouseEvent) => {
@@ -52,7 +51,7 @@ export const LayoutMenu = () => {
         }
     }, [handleOutsideClick, handleEscape])
 
-    if (!isLoggedIn) {
+    if (!accessToken) {
         return (
             <div className="flex items-center">
                 <Link
@@ -79,7 +78,10 @@ export const LayoutMenu = () => {
                 type="button"
                 onClick={() => setIsOpen((prev) => !prev)}
             >
-                Menu{' '}
+                <div className="flex items-center">
+                    {data ? data.name : ''}
+                    <span className="mx-2 text-gray-600">|</span>
+                </div>
                 {!isOpen ? (
                     <svg
                         className="w-4 h-4 ml-2"
@@ -89,12 +91,7 @@ export const LayoutMenu = () => {
                         viewBox="0 0 24 24"
                         xmlns="http://www.w3.org/2000/svg"
                     >
-                        <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth="2"
-                            d="M19 9l-7 7-7-7"
-                        ></path>
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path>
                     </svg>
                 ) : (
                     <svg
@@ -105,22 +102,14 @@ export const LayoutMenu = () => {
                         viewBox="0 0 24 24"
                         xmlns="http://www.w3.org/2000/svg"
                     >
-                        <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth="2"
-                            d="M5 15l7-7 7 7"
-                        ></path>
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 15l7-7 7 7"></path>
                     </svg>
                 )}
             </button>
             <div
-                className={classNames(
-                    'absolute z-10 bg-white divide-y divide-gray-100 rounded-lg shadow w-44',
-                    {
-                        hidden: !isOpen,
-                    }
-                )}
+                className={classNames('absolute z-10 bg-white divide-y divide-gray-100 rounded-lg shadow w-44', {
+                    hidden: !isOpen,
+                })}
             >
                 <ul className="py-2 text-sm text-gray-700">
                     {[
@@ -130,7 +119,7 @@ export const LayoutMenu = () => {
                         },
                         {
                             name: 'Logout',
-                            onClick: logout,
+                            onClick: () => mutate(),
                         },
                     ].map((item, index) => (
                         <li key={index}>

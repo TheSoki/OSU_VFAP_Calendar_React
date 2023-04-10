@@ -1,6 +1,6 @@
 export type Tokens = {
     accessToken: string
-    refreshToken: string
+    // refreshToken: string
 }
 
 export type User = {

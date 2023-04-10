@@ -7,8 +7,9 @@ import {
     eventSchema,
     updateUserSchema,
     permissionSchema,
+    methodWithId,
 } from './schema'
-import { Tokens, User, Note, Permission } from './types'
+import { Tokens, User, Note, Permission, Event } from './types'
 
 const u = initUntypeable().pushArg<'GET' | 'POST' | 'PUT' | 'DELETE'>()
 
@@ -17,9 +18,9 @@ const router = u.router({
     '/auth/logout': {
         GET: u.output<void>(),
     },
-    '/auth/refresh': {
-        GET: u.output<Tokens>(),
-    },
+    // '/auth/refresh': {
+    // GET: u.output<Tokens>(),
+    // },
     '/auth/register': {
         POST: u.input(registerSchema).output<Tokens>(),
     },
@@ -38,55 +39,57 @@ const router = u.router({
         POST: u.input(userSchema).output<User>(),
     },
     '/user/:id': {
-        GET: u.output<User>(),
-        PUT: u.input(updateUserSchema).output<User>(),
-        DELETE: u.output<User>(),
+        GET: u.input(methodWithId).output<User>(),
+        PUT: u.input(updateUserSchema.merge(methodWithId)).output<User>(),
+        DELETE: u.input(methodWithId).output<User>(),
     },
     '/note': {
         GET: u.output<Note[]>(),
         POST: u.input(noteSchema).output<Note>(),
     },
     '/note/:id': {
-        GET: u.output<Note>(),
-        PUT: u.input(noteSchema).output<Note>(),
-        DELETE: u.output<Note>(),
+        GET: u.input(methodWithId).output<Note>(),
+        PUT: u.input(noteSchema.merge(methodWithId)).output<Note>(),
+        DELETE: u.input(methodWithId).output<Note>(),
     },
     '/event': {
         GET: u.output<Event[]>(),
         POST: u.input(eventSchema).output<Event>(),
     },
     '/event/:id': {
-        GET: u.output<Event>(),
-        PUT: u.input(eventSchema).output<Event>(),
-        DELETE: u.output<Event>(),
+        GET: u.input(methodWithId).output<Event>(),
+        PUT: u.input(eventSchema.merge(methodWithId)).output<Event>(),
+        DELETE: u.input(methodWithId).output<Event>(),
     },
     '/permission': {
         GET: u.output<Permission[]>(),
     },
     '/permission/:id': {
-        PUT: u.input(permissionSchema).output<User>(),
-        DELETE: u.output<User>(),
+        PUT: u.input(permissionSchema.merge(methodWithId)).output<User>(),
+        DELETE: u.input(methodWithId).output<User>(),
     },
 })
 
 export const client = createTypeLevelClient<typeof router>((path, method, input) => {
     const accessToken = localStorage.getItem('accessToken')
 
-    return fetch('http://localhost' + path, {
+    const processedPath = path.includes(':id') ? path.replace(':id', input.id || '') : path
+
+    return fetch('http://localhost' + processedPath, {
         method,
         headers: {
             'Content-Type': 'application/json',
             Authorization: `Bearer ${accessToken}`,
         },
-        body: JSON.stringify(input),
+        body: method === 'GET' ? undefined : JSON.stringify(input),
     }).then((res) => {
         if (res.ok) {
+            if (path === '/auth/logout') return null
             return res.json()
         }
 
         if (res.status === 401) {
             localStorage.removeItem('accessToken')
-            localStorage.removeItem('refreshToken')
             window.location.href = '/login'
         } else {
             throw new Error(`HTTP error! status: ${res.status}`)

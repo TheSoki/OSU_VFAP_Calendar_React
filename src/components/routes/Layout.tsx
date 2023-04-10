@@ -7,14 +7,7 @@ import { Toaster } from 'react-hot-toast'
 const items = [
     {
         title: 'Product',
-        items: [
-            'Features',
-            'Security',
-            'Pricing',
-            'Resources',
-            'More Products',
-            "What's New",
-        ],
+        items: ['Features', 'Security', 'Pricing', 'Resources', 'More Products', "What's New"],
     },
     {
         title: 'Platform',
@@ -35,10 +28,7 @@ export const Layout: FC<{
 }> = ({ children }) => {
     const windowSize = useWindowSize()
 
-    const memoizedPosition = useMemo(
-        () => (windowSize.width < 768 ? 'top-center' : 'bottom-right'),
-        [windowSize.width]
-    )
+    const memoizedPosition = useMemo(() => (windowSize.width < 768 ? 'top-center' : 'bottom-right'), [windowSize.width])
 
     return (
         <>
@@ -51,24 +41,18 @@ export const Layout: FC<{
                         <LayoutMenu />
                     </nav>
 
-                    <main className="w-full max-w-7xl mx-auto py-16 px-4 sm:px-6 lg:px-8">
-                        {children}
-                    </main>
+                    <main className="w-full max-w-7xl mx-auto py-16 px-4 sm:px-6 lg:px-8">{children}</main>
 
                     <footer className="mt-auto">
                         <div className="max-w-7xl mx-auto px-4 sm:px-6">
                             <div className="grid grid-cols-12 gap-4 gap-y-8 sm:gap-8 py-8 md:py-12">
                                 <div className="col-span-12 lg:col-span-4">
                                     <div className="mb-2">
-                                        <Link
-                                            className="inline-block font-bold text-xl"
-                                            to="/"
-                                        >
+                                        <Link className="inline-block font-bold text-xl" to="/">
                                             Your Calendar App
                                         </Link>
                                         <p className="mt-2 text-sm text-gray-600">
-                                            &copy; {new Date().getFullYear()} All
-                                            rights reserved.
+                                            &copy; {new Date().getFullYear()} All rights reserved.
                                         </p>
                                     </div>
                                     <div className="text-sm text-gray-600">
@@ -103,13 +87,8 @@ export const Layout: FC<{
                                 </div>
 
                                 {items.map((section) => (
-                                    <div
-                                        className="col-span-6 md:col-span-3 lg:col-span-2"
-                                        key={section.title}
-                                    >
-                                        <div className="text-gray-800 font-medium mb-2">
-                                            {section.title}
-                                        </div>
+                                    <div className="col-span-6 md:col-span-3 lg:col-span-2" key={section.title}>
+                                        <div className="text-gray-800 font-medium mb-2">{section.title}</div>
                                         <ul className="text-sm">
                                             {section.items.map((item) => (
                                                 <li className="mb-2" key={item}>

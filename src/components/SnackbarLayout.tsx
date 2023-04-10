@@ -16,10 +16,7 @@ export const SnackbarLayout = ({ children }: { children: React.ReactNode }) => (
                 </Link>
             </li>
             <li className="mr-2">
-                <Link
-                    to="/dashboard/create"
-                    className={getClassNames('/dashboard/create')}
-                >
+                <Link to="/dashboard/create" className={getClassNames('/dashboard/create')}>
                     Create
                 </Link>
             </li>
