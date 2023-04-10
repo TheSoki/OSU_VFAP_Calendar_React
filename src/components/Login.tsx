@@ -5,6 +5,7 @@ import { z } from 'zod'
 import { Link, useNavigate } from 'react-router-dom'
 import classNames from 'classnames'
 import { useMutation } from '@tanstack/react-query'
+import { pushNotification } from '../utils/notifications'
 
 type ValidationSchema = z.infer<typeof loginSchema>
 
@@ -16,6 +17,10 @@ export const Login = () => {
         onSuccess(data) {
             localStorage.setItem('accessToken', data.accessToken)
             navigate('/dashboard')
+            pushNotification({
+                message: 'Welcome back!',
+                type: 'INFORMATIONAL',
+            })
         },
     })
 

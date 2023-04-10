@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { client } from '../../router'
 import classNames from 'classnames'
 import { useMutation, useQuery } from '@tanstack/react-query'
+import { pushNotification } from '../../utils/notifications'
 
 export const LayoutMenu = () => {
     const [isOpen, setIsOpen] = useState(false)
@@ -20,6 +21,10 @@ export const LayoutMenu = () => {
         onSuccess() {
             localStorage.removeItem('accessToken')
             navigate('/')
+            pushNotification({
+                message: 'You have been logged out',
+                type: 'SUCCESS',
+            })
         },
     })
 

@@ -5,13 +5,14 @@ import { z } from 'zod'
 import { useNavigate } from 'react-router-dom'
 import classNames from 'classnames'
 import { useMutation } from '@tanstack/react-query'
+import { pushNotification } from '../utils/notifications'
 
 const formSchema = z.object({
     title: z.string().min(4),
     content: z.string().min(4),
     // format yyyy-MM-ddThh:mm
-    start: z.string().regex(/^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})$/, 'must be in format yyyy-MM-ddThh:mm'),
-    end: z.string().regex(/^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})$/, 'must be in format yyyy-MM-ddThh:mm'),
+    start: z.string().regex(/^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})$/, 'Required'),
+    end: z.string().regex(/^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})$/, 'Required'),
 })
 
 type ValidationSchema = z.infer<typeof formSchema>
@@ -33,6 +34,16 @@ export const Create = () => {
         },
         onSuccess(data) {
             navigate(`/dashboard/event/${data.id}`)
+            pushNotification({
+                message: 'Event created successfully',
+                type: 'SUCCESS',
+            })
+        },
+        onError() {
+            pushNotification({
+                message: 'An error has occurred while creating the event',
+                type: 'ERROR',
+            })
         },
     })
 

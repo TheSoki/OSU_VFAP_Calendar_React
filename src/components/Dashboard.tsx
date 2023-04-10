@@ -169,7 +169,7 @@ const DashboardTable: FC<{
                                     <td className="px-6 py-4">{new Date(event.createdAt).toLocaleString()}</td>
                                     <td className="px-6 py-4 flex space-x-2">
                                         <Link to={`/dashboard/event/${event.id}/edit`}>Edit</Link>
-                                        <Link to={`/dashboard/event/${event.id}`}>View</Link>
+                                        <Link to={`/dashboard/event/${event.id}`}>Detail</Link>
                                         <button
                                             disabled={isDeleting}
                                             className="ml-2 text-red-500"

@@ -6,13 +6,14 @@ import classNames from 'classnames'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { FC } from 'react'
+import { pushNotification } from '../utils/notifications'
 
 const formSchema = z.object({
     title: z.string().min(4),
     content: z.string().min(4),
     // format yyyy-MM-ddThh:mm
-    start: z.string().regex(/^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})$/, 'must be in format yyyy-MM-ddThh:mm'),
-    end: z.string().regex(/^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})$/, 'must be in format yyyy-MM-ddThh:mm'),
+    start: z.string().regex(/^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})$/, 'Required'),
+    end: z.string().regex(/^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})$/, 'Required'),
 })
 
 type ValidationSchema = z.infer<typeof formSchema>
@@ -54,10 +55,23 @@ const EditForm: FC<{
                 end: new Date(end).toISOString(),
             })
 
-            return client('/event', 'POST', values)
+            return client('/event/:id', 'PUT', {
+                id: event.id,
+                ...values,
+            })
         },
         onSuccess(data) {
             navigate(`/dashboard/event/${data.id}`)
+            pushNotification({
+                message: 'Event updated successfully',
+                type: 'SUCCESS',
+            })
+        },
+        onError() {
+            pushNotification({
+                message: 'An error has occurred while updating the event',
+                type: 'ERROR',
+            })
         },
     })
 
