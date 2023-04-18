@@ -36,6 +36,7 @@ const DashboardTable: FC<{
                 message: 'Event deleted',
                 type: 'SUCCESS',
             })
+            setPage(1)
             refetch()
         },
         onError() {
