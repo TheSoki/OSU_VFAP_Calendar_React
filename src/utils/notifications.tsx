@@ -33,7 +33,7 @@ export const pushNotification = (props: { message: string; type: NotificationTyp
             <span className="ml-2">
                 <button type="button" className="mt-1" onClick={() => toast.dismiss(toastId)}>
                     <img
-                        src="./cross.svg"
+                        src="/cross.svg"
                         style={{
                             color: '#9CA3AF',
                             transform: 'scale(2)',

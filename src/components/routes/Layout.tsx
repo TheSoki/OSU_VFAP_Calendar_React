@@ -36,7 +36,7 @@ export const Layout: FC<{
                 <div className="min-h-screen flex flex-col">
                     <nav className="w-full  max-w-7xl mx-auto px-4 sm:px-6  flex justify-between items-center py-4">
                         <Link to="/">
-                            <img src="./logo.jpg" width={50} height={41} alt="Logo" />
+                            <img src="/logo.jpg" width={50} height={41} alt="Logo" />
                         </Link>
                         <LayoutMenu />
                     </nav>

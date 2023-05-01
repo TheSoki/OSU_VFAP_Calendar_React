@@ -6,7 +6,7 @@ export const Index = () => (
         <p className="text-xl text-gray-600 mb-8">Keep track of your busy schedule with ease.</p>
         <div className="flex flex-col md:flex-row md:space-x-8">
             <div className="flex-1">
-                <img src="./screenshot.png" width={800} height={600} alt="Calendar" />
+                <img src="/screenshot.png" width={800} height={600} alt="Calendar" />
             </div>
             <div className="flex-1">
                 <h2 className="text-3xl font-bold text-gray-800 mb-4">Never Miss an Appointment Again</h2>
